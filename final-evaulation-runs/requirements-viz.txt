@@ -1,0 +1,6 @@
+# Optional deps for visualize.py and visualize_extra.py (not needed for the honeypot server)
+matplotlib>=3.7
+numpy>=1.24
+pandas>=2.0
+seaborn>=0.13
+scipy>=1.10

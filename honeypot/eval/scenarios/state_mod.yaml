@@ -1,0 +1,186 @@
+variant: state_mod
+description: >
+  State-modifying commands, tests that the deterministic executor correctly
+  persists file creation, deletion, move, and copy across subsequent commands
+  within the same session. Each modification is immediately verified.
+
+commands:
+  # Setup: confirm starting state
+  - cmd: ls /tmp
+    type: state_mod
+    expect_exit: 0
+
+  # touch: create new file
+  - cmd: touch /tmp/eval_test.txt
+    type: state_mod
+    expect_exit: 0
+
+  - cmd: ls /tmp
+    type: state_mod
+    expect_exit: 0
+    expect_output_contains: "eval_test.txt"
+
+  # Redirect: write content to file
+  - cmd: echo "hello from eval" > /tmp/eval_test.txt
+    type: state_mod
+    expect_exit: 0
+
+  - cmd: cat /tmp/eval_test.txt
+    type: state_mod
+    expect_exit: 0
+    expect_output_contains: "hello from eval"
+
+  # Append redirect
+  - cmd: echo "second line" >> /tmp/eval_test.txt
+    type: state_mod
+    expect_exit: 0
+
+  - cmd: cat /tmp/eval_test.txt
+    type: state_mod
+    expect_exit: 0
+    expect_output_contains: "second line"
+
+  # mkdir: create directory
+  - cmd: mkdir /tmp/eval_dir
+    type: state_mod
+    expect_exit: 0
+
+  - cmd: ls /tmp
+    type: state_mod
+    expect_exit: 0
+    expect_output_contains: "eval_dir"
+
+  # touch inside new directory
+  - cmd: touch /tmp/eval_dir/nested.txt
+    type: state_mod
+    expect_exit: 0
+
+  - cmd: ls /tmp/eval_dir
+    type: state_mod
+    expect_exit: 0
+    expect_output_contains: "nested.txt"
+
+  # cp: copy file
+  - cmd: cp /tmp/eval_test.txt /tmp/eval_copy.txt
+    type: state_mod
+    expect_exit: 0
+
+  - cmd: ls /tmp
+    type: state_mod
+    expect_exit: 0
+    expect_output_contains: "eval_copy.txt"
+
+  - cmd: cat /tmp/eval_copy.txt
+    type: state_mod
+    expect_exit: 0
+    expect_output_contains: "hello from eval"
+
+  # mv: rename file
+  - cmd: mv /tmp/eval_copy.txt /tmp/eval_renamed.txt
+    type: state_mod
+    expect_exit: 0
+
+  - cmd: ls /tmp
+    type: state_mod
+    expect_exit: 0
+    expect_output_contains: "eval_renamed.txt"
+
+  # Original name is gone
+  - cmd: cat /tmp/eval_copy.txt
+    type: state_mod
+    expect_exit: 1
+    expect_output_contains: "No such file or directory"
+
+  # rm: delete file
+  - cmd: rm /tmp/eval_renamed.txt
+    type: state_mod
+    expect_exit: 0
+
+  - cmd: cat /tmp/eval_renamed.txt
+    type: state_mod
+    expect_exit: 1
+    expect_output_contains: "No such file or directory"
+
+  # rm -r: delete directory
+  - cmd: rm -r /tmp/eval_dir
+    type: state_mod
+    expect_exit: 0
+
+  - cmd: ls /tmp/eval_dir
+    type: state_mod
+    expect_exit: 2
+    expect_output_contains: "No such file or directory"
+
+  # Error cases
+  # touch on non-existent parent
+  - cmd: touch /tmp/nosuchdir/file.txt
+    type: state_mod
+    expect_exit: 1
+    expect_output_contains: "No such file"
+
+  # mkdir where file already exists
+  - cmd: mkdir /tmp/eval_test.txt
+    type: state_mod
+    expect_exit: 1
+
+  # Permission denied: write to /root/
+  - cmd: touch /root/blocked.txt
+    type: state_mod
+    expect_exit: 1
+    expect_output_contains: "Permission denied"
+
+  - cmd: mkdir /root/blocked_dir
+    type: state_mod
+    expect_exit: 1
+    expect_output_contains: "Permission denied"
+
+  # cd into non-existent
+  - cmd: cd /nosuchdir
+    type: state_mod
+    expect_exit: 1
+    expect_output_contains: "No such file or directory"
+
+  # sudo: state mutations as root
+  # Verify /root is empty of test files before we start
+  - cmd: sudo ls /root
+    type: state_mod
+    sudo_password: "helloworld"
+    expect_exit: 0
+
+  # Create a file under /root via sudo
+  - cmd: sudo touch /root/sudofile.txt
+    type: state_mod
+    sudo_password: "helloworld"
+    expect_exit: 0
+
+  - cmd: sudo ls /root
+    type: state_mod
+    sudo_password: "helloworld"
+    expect_exit: 0
+    expect_output_contains: "sudofile.txt"
+
+  # Write content to it via sudo
+  - cmd: sudo cat /etc/shadow
+    type: state_mod
+    sudo_password: "helloworld"
+    expect_exit: 0
+
+  # Remove the root-owned file via sudo
+  - cmd: sudo rm /root/sudofile.txt
+    type: state_mod
+    sudo_password: "helloworld"
+    expect_exit: 0
+
+  - cmd: sudo ls /root
+    type: state_mod
+    sudo_password: "helloworld"
+    expect_exit: 0
+
+  # Clean up remaining test file
+  - cmd: rm /tmp/eval_test.txt
+    type: state_mod
+    expect_exit: 0
+
+  - cmd: ls /tmp
+    type: state_mod
+    expect_exit: 0

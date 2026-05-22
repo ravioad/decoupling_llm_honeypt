@@ -1,0 +1,47 @@
+meta:
+  distro: ubuntu
+  distro_version: "22.04"
+  locale: "C.UTF-8"
+
+cases:
+  - id: ls_long_current
+    cmd: ["bash", "-lc", "ls -l"]
+    family: "ls"
+    outcome: "success"
+    tags: ["format"]
+
+  - id: ls_missing_path
+    cmd: ["bash", "-lc", "ls /no_such_dir"]
+    family: "ls"
+    outcome: "missing_path"
+    tags: ["error"]
+
+  - id: cat_missing
+    cmd: ["bash", "-lc", "cat /no_such_file"]
+    family: "cat"
+    outcome: "missing_path"
+    tags: ["error"]
+
+  - id: permission_denied_root
+    cmd: ["bash", "-lc", "ls /root"]
+    family: "ls"
+    outcome: "permission_denied"
+    tags: ["error"]
+
+  - id: uname
+    cmd: ["bash", "-lc", "uname -a"]
+    family: "uname"
+    outcome: "success"
+    tags: ["banner"]
+
+  - id: id_cmd
+    cmd: ["bash", "-lc", "id"]
+    family: "id"
+    outcome: "success"
+    tags: ["format"]
+
+  - id: grep_missing_file
+    cmd: ["bash", "-lc", "grep foo /no_such_file"]
+    family: "grep"
+    outcome: "missing_path"
+    tags: ["error"]

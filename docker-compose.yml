@@ -1,0 +1,75 @@
+# Prerequisites:
+#   1. Install Ollama: https://ollama.ai
+#   2. Pull model:     ollama pull qwen2.5:7b
+#   3. Copy env file:  cp .env.example .env
+#
+# Start:  docker compose up
+# Connect: ssh ubuntu@localhost -p 2223   (password: helloworld)
+
+services:
+
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: decop-chromadb
+    expose:
+      - "8000"
+    environment:
+      IS_PERSISTENT: "TRUE"
+      PERSIST_DIRECTORY: "/chroma/chroma"
+      ANONYMIZED_TELEMETRY: "false"
+    volumes:
+      - chroma_data:/chroma/chroma
+    healthcheck:
+      test: ["CMD", "/bin/bash", "-c", "cat < /dev/null > /dev/tcp/localhost/8000"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+  honeypot:
+    build:
+      context: .
+      dockerfile: honeypot/Dockerfile
+    container_name: decop-honeypot
+    depends_on:
+      chromadb:
+        condition: service_healthy
+    env_file:
+      - path: .env
+        required: false 
+    environment:
+      USE_LLM_RENDERER: "${USE_LLM_RENDERER:-true}"
+      FORCE_DETERMINISTIC: "${FORCE_DETERMINISTIC:-false}"
+      FORCE_NEW_SESSION: "true"
+      CHROMA_HOST: "chromadb"
+      CHROMA_PORT: "8000"
+      SESSIONS_ROOT: "/data/sessions"
+      SEED_PATH: "/app/state_templates/state.json"
+      KB_DOCS_PATH: "/app/rag-corpus/kb_docs_v1.jsonl"
+    ports:
+      - "2223:2223"
+    volumes:
+      - ./honeypot/runtime_logs/sessions:/data/sessions
+      - ./rag-corpus/out:/app/rag-corpus/out
+    restart: unless-stopped
+
+  honeypot-baseline:
+    build:
+      context: .
+      dockerfile: honeypot/Dockerfile
+    container_name: decop-honeypot-baseline
+    command: ["python", "/app/baseline/ssh_server_baseline.py"]
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      SESSIONS_ROOT: "/data/sessions"
+      SEED_PATH: "/app/state_templates/state.json"
+    ports:
+      - "2224:2224"
+    volumes:
+      - ./honeypot/runtime_logs/sessions:/data/sessions
+    restart: unless-stopped
+
+volumes:
+  chroma_data:

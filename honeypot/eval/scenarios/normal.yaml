@@ -1,0 +1,224 @@
+variant: normal
+description: >
+  Realistic attacker recon session. Mirrors the command sequence a real
+  threat actor runs after gaining SSH access, identity checks, system
+  enumeration, privilege escalation via sudo, and post-escalation
+  exploration of root-owned files.
+
+commands:
+  # Identity and environment
+  - cmd: whoami
+    type: normal
+    expect_exit: 0
+
+  - cmd: id
+    type: normal
+    expect_exit: 0
+
+  - cmd: hostname
+    type: normal
+    expect_exit: 0
+
+  - cmd: uname -a
+    type: normal
+    expect_exit: 0
+
+  - cmd: uname -r
+    type: normal
+    expect_exit: 0
+
+  - cmd: pwd
+    type: normal
+    expect_exit: 0
+
+  # Date / uptime
+  - cmd: date
+    type: normal
+    expect_exit: 0
+
+  - cmd: uptime
+    type: normal
+    expect_exit: 0
+
+  # Filesystem exploration
+  - cmd: ls
+    type: normal
+    expect_exit: 0
+
+  - cmd: ls -la
+    type: normal
+    expect_exit: 0
+
+  - cmd: ls /
+    type: normal
+    expect_exit: 0
+
+  - cmd: ls /etc
+    type: normal
+    expect_exit: 0
+
+  - cmd: ls /home
+    type: normal
+    expect_exit: 0
+
+  - cmd: ls /var/log
+    type: normal
+    expect_exit: 0
+
+  - cmd: ls /tmp
+    type: normal
+    expect_exit: 0
+
+  - cmd: ls /var/www
+    type: normal
+    expect_exit: 0
+
+  # Sensitive file reads (as ubuntu)
+  - cmd: cat /etc/passwd
+    type: normal
+    expect_exit: 0
+
+  - cmd: cat /etc/hostname
+    type: normal
+    expect_exit: 0
+
+  - cmd: cat /etc/hosts
+    type: normal
+    expect_exit: 0
+
+  - cmd: cat /etc/os-release
+    type: normal
+    expect_exit: 0
+
+  - cmd: cat /home/ubuntu/notes.txt
+    type: normal
+    expect_exit: 0
+
+  - cmd: cat /var/log/auth.log
+    type: normal
+    expect_exit: 0
+
+  - cmd: cat /proc/version
+    type: normal
+    expect_exit: 0
+
+  - cmd: cat /proc/cpuinfo
+    type: normal
+    expect_exit: 0
+
+  - cmd: cat /proc/meminfo
+    type: normal
+    expect_exit: 0
+
+  # Shadow: permission denied as ubuntu
+  - cmd: cat /etc/shadow
+    type: normal
+    expect_exit: 1
+    expect_output_contains: "Permission denied"
+
+  # /root: permission denied as ubuntu
+  - cmd: ls /root
+    type: normal
+    expect_exit: 1
+    expect_output_contains: "Permission denied"
+
+  # Process and network info
+  - cmd: ps aux
+    type: normal
+    expect_exit: 0
+
+  - cmd: ip addr
+    type: normal
+    expect_exit: 0
+
+  - cmd: ip route
+    type: normal
+    expect_exit: 0
+
+  # Environment
+  - cmd: env
+    type: normal
+    expect_exit: 0
+
+  - cmd: echo $HOME
+    type: normal
+    expect_exit: 0
+
+  - cmd: echo $USER
+    type: normal
+    expect_exit: 0
+
+  # which (confirm sudo exists)
+  - cmd: which sudo
+    type: normal
+    expect_exit: 0
+
+  # sudo: check privileges
+  - cmd: sudo -l
+    type: normal
+    sudo_password: "helloworld"
+    expect_exit: 0
+    expect_output_contains: "ALL"
+
+  # sudo: run a single command as root
+  - cmd: sudo id
+    type: normal
+    sudo_password: "helloworld"
+    expect_exit: 0
+    expect_output_contains: "uid=0"
+
+  - cmd: sudo cat /etc/shadow
+    type: normal
+    sudo_password: "helloworld"
+    expect_exit: 0
+
+  # Escalate to root shell
+  - cmd: sudo su
+    type: normal
+    sudo_password: "helloworld"
+    expect_exit: 0
+
+  # Post-escalation: explore as root
+  - cmd: whoami
+    type: normal
+    expect_exit: 0
+    expect_output_contains: "root"
+
+  - cmd: id
+    type: normal
+    expect_exit: 0
+    expect_output_contains: "uid=0"
+
+  - cmd: ls -la /root
+    type: normal
+    expect_exit: 0
+
+  - cmd: cat /root/notes.txt
+    type: normal
+    expect_exit: 0
+
+  - cmd: cat /root/.bash_history
+    type: normal
+    expect_exit: 0
+
+  - cmd: ls /root/.ssh
+    type: normal
+    expect_exit: 0
+
+  - cmd: cat /root/.ssh/authorized_keys
+    type: normal
+    expect_exit: 0
+
+  - cmd: cat /etc/shadow
+    type: normal
+    expect_exit: 0
+
+  # Drop back to ubuntu
+  - cmd: exit
+    type: normal
+    expect_exit: 0
+
+  - cmd: whoami
+    type: normal
+    expect_exit: 0
+    expect_output_contains: "ubuntu"

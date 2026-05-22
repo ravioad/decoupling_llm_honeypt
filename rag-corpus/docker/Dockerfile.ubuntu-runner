@@ -1,0 +1,30 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y \
+    coreutils \
+    procps \
+    findutils \
+    grep \
+    sed \
+    gawk \
+    util-linux \
+    iproute2 \
+    net-tools \
+    curl \
+    wget \
+    ca-certificates \
+    locales \
+    sudo \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN locale-gen C.UTF-8 || true
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
+RUN useradd -m -s /bin/bash attacker \
+    && mkdir -p /work \
+    && chown -R attacker:attacker /work
+
+WORKDIR /work
+CMD ["bash"]

@@ -1,0 +1,15 @@
+{
+  "variant": "long_session",
+  "scenario": "long_session",
+  "description": "Long session interaction \u2014 an extended 65-command sequence that references earlier state to test context-truncation resilience and long-session drift. The key property under test: the system's state consistency must not degrade as the session grows, because state lives in state.json, not in LLM context. Landmark commands are interleaved throughout to verify earlier facts remain true.\n",
+  "host": "localhost",
+  "port": 2224,
+  "username": "ubuntu",
+  "run_start_utc": "2026-04-02T20:04:08.951858+00:00",
+  "run_end_utc": "2026-04-02T20:08:14.864740+00:00",
+  "duration_s": 245.91,
+  "n_commands": 69,
+  "n_timeout": 0,
+  "output_dir": "runtime_logs/eval/prompt_only/long_session",
+  "manifest": "runtime_logs/eval/prompt_only/long_session/run_manifest.jsonl"
+}

@@ -1,0 +1,6 @@
+asyncssh>=2.14.0
+paramiko>=3.0.0
+bcrypt>=4.0.0
+chromadb>=1.4.0
+typing_extensions>=4.0.0
+python-dotenv>=1.0.0

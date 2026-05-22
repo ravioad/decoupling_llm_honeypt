@@ -1,0 +1,289 @@
+variant: long_session
+description: >
+  Long session interaction, an extended 65-command sequence that references
+  earlier state to test context-truncation resilience and long-session drift.
+
+commands:
+  # BLOCK 1: Establish baseline facts
+  - cmd: whoami
+    type: long_session
+    landmark: true
+    label: "initial_user"
+
+  - cmd: hostname
+    type: long_session
+    landmark: true
+    label: "initial_hostname"
+
+  - cmd: pwd
+    type: long_session
+    landmark: true
+    label: "initial_cwd"
+
+  - cmd: cat /etc/hostname
+    type: long_session
+    landmark: true
+    label: "etc_hostname"
+
+  - cmd: ls /home/ubuntu
+    type: long_session
+    landmark: true
+    label: "initial_home_ls"
+
+  # BLOCK 2: Create persistent state
+  - cmd: touch /tmp/landmark_file_1.txt
+    type: long_session
+
+  - cmd: echo "landmark content alpha" > /tmp/landmark_file_1.txt
+    type: long_session
+
+  - cmd: mkdir /tmp/landmark_dir
+    type: long_session
+
+  - cmd: touch /tmp/landmark_dir/nested_a.txt
+    type: long_session
+
+  - cmd: echo "nested content" > /tmp/landmark_dir/nested_a.txt
+    type: long_session
+
+  # BLOCK 3: Filler recon (simulate attacker exploring)
+  - cmd: cat /etc/passwd
+    type: long_session
+
+  - cmd: cat /etc/os-release
+    type: long_session
+
+  - cmd: uname -a
+    type: long_session
+
+  - cmd: cat /proc/version
+    type: long_session
+
+  - cmd: ps aux
+    type: long_session
+
+  - cmd: env
+    type: long_session
+
+  - cmd: ip addr
+    type: long_session
+
+  - cmd: cat /var/log/auth.log
+    type: long_session
+
+  - cmd: ls /var/www
+    type: long_session
+
+  - cmd: cat /var/www/index.html
+    type: long_session
+
+  # BLOCK 4: First consistency check (20 commands in)
+  - cmd: whoami
+    type: long_session
+    landmark: true
+    label: "mid_user_check"
+
+  - cmd: cat /tmp/landmark_file_1.txt
+    type: long_session
+    landmark: true
+    label: "mid_landmark_file_check"
+    expect_output_contains: "landmark content alpha"
+
+  - cmd: ls /tmp/landmark_dir
+    type: long_session
+    landmark: true
+    label: "mid_landmark_dir_check"
+    expect_output_contains: "nested_a.txt"
+
+  # BLOCK 5: More filler
+  - cmd: ls /etc
+    type: long_session
+
+  - cmd: cat /etc/hosts
+    type: long_session
+
+  - cmd: cat /proc/cpuinfo
+    type: long_session
+
+  - cmd: cat /proc/meminfo
+    type: long_session
+
+  - cmd: uptime
+    type: long_session
+
+  - cmd: date
+    type: long_session
+
+  - cmd: ls /tmp
+    type: long_session
+
+  - cmd: ls -la /home/ubuntu
+    type: long_session
+
+  - cmd: cat /home/ubuntu/.bashrc
+    type: long_session
+
+  - cmd: ls /var/log
+    type: long_session
+
+  - cmd: cat /var/log/syslog
+    type: long_session
+
+  # BLOCK 6: Add more state mid-session
+  - cmd: touch /tmp/landmark_file_2.txt
+    type: long_session
+
+  - cmd: echo "landmark content beta" > /tmp/landmark_file_2.txt
+    type: long_session
+
+  - cmd: cp /tmp/landmark_file_1.txt /tmp/landmark_file_1_copy.txt
+    type: long_session
+
+  # BLOCK 6b: Sudo escalation mid-session
+  # Key property under test: privilege escalation and de-escalation must not
+  # corrupt the session state that was built in earlier blocks.
+  - cmd: sudo su
+    type: long_session
+    sudo_password: "helloworld"
+
+  # Verify we are now root
+  - cmd: whoami
+    type: long_session
+    landmark: true
+    label: "mid_sudo_user_check"
+    expect_output_contains: "root"
+
+  # Read a root-only file to confirm privilege works
+  - cmd: cat /root/notes.txt
+    type: long_session
+    landmark: true
+    label: "mid_sudo_root_notes"
+
+  - cmd: cat /etc/shadow
+    type: long_session
+
+  # Drop back to ubuntu
+  - cmd: exit
+    type: long_session
+
+  # Verify we are back as ubuntu
+  - cmd: whoami
+    type: long_session
+    landmark: true
+    label: "post_sudo_user_check"
+    expect_output_contains: "ubuntu"
+
+  # Verify landmark files created before escalation are still intact
+  - cmd: cat /tmp/landmark_file_1.txt
+    type: long_session
+    landmark: true
+    label: "post_sudo_landmark_file_check"
+    expect_output_contains: "landmark content alpha"
+
+  # BLOCK 7: More filler
+  - cmd: id
+    type: long_session
+
+  - cmd: echo $HOME
+    type: long_session
+
+  - cmd: echo $USER
+    type: long_session
+
+  - cmd: ip route
+    type: long_session
+
+  - cmd: cat /proc/net/dev
+    type: long_session
+
+  - cmd: ls /bin
+    type: long_session
+
+  - cmd: ls /usr
+    type: long_session
+
+  - cmd: ls /var
+    type: long_session
+
+  - cmd: ls /
+    type: long_session
+
+  - cmd: ps -ef
+    type: long_session
+
+  # BLOCK 8: Second consistency check (~50 commands in)
+  - cmd: whoami
+    type: long_session
+    landmark: true
+    label: "late_user_check"
+
+  - cmd: hostname
+    type: long_session
+    landmark: true
+    label: "late_hostname_check"
+
+  - cmd: cat /tmp/landmark_file_1.txt
+    type: long_session
+    landmark: true
+    label: "late_landmark_file_1_check"
+    expect_output_contains: "landmark content alpha"
+
+  - cmd: cat /tmp/landmark_file_2.txt
+    type: long_session
+    landmark: true
+    label: "late_landmark_file_2_check"
+    expect_output_contains: "landmark content beta"
+
+  - cmd: ls /tmp/landmark_dir
+    type: long_session
+    landmark: true
+    label: "late_landmark_dir_check"
+    expect_output_contains: "nested_a.txt"
+
+  - cmd: cat /tmp/landmark_dir/nested_a.txt
+    type: long_session
+    landmark: true
+    label: "late_nested_content_check"
+    expect_output_contains: "nested content"
+
+  - cmd: cat /tmp/landmark_file_1_copy.txt
+    type: long_session
+    landmark: true
+    label: "late_copy_check"
+    expect_output_contains: "landmark content alpha"
+
+  # BLOCK 9: Final filler
+  - cmd: cat /etc/hostname
+    type: long_session
+    landmark: true
+    label: "final_etc_hostname"
+
+  - cmd: pwd
+    type: long_session
+
+  - cmd: date
+    type: long_session
+
+  - cmd: uptime -p
+    type: long_session
+
+  # BLOCK 10: Final state modification + verify
+  - cmd: rm /tmp/landmark_file_2.txt
+    type: long_session
+
+  - cmd: cat /tmp/landmark_file_2.txt
+    type: long_session
+    landmark: true
+    label: "final_deletion_check"
+    expect_output_contains: "No such file or directory"
+
+  # Final identity check, must match block 1 values
+  - cmd: whoami
+    type: long_session
+    landmark: true
+    label: "final_user_check"
+
+  - cmd: hostname
+    type: long_session
+    landmark: true
+    label: "final_hostname_check"

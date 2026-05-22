@@ -1,0 +1,15 @@
+{
+  "variant": "normal",
+  "scenario": "normal",
+  "description": "Realistic attacker recon session. Mirrors the command sequence a real threat actor runs after gaining SSH access: identity checks, system enumeration, privilege escalation via sudo, and post-escalation exploration of root-owned files. Tests command correctness, permission enforcement, and sudo flow end-to-end.\n",
+  "host": "localhost",
+  "port": 2223,
+  "username": "ubuntu",
+  "run_start_utc": "2026-04-02T19:58:47.864864+00:00",
+  "run_end_utc": "2026-04-02T19:58:52.007488+00:00",
+  "duration_s": 4.14,
+  "n_commands": 48,
+  "n_timeout": 0,
+  "output_dir": "runtime_logs/eval/deterministic_only/normal",
+  "manifest": "runtime_logs/eval/deterministic_only/normal/run_manifest.jsonl"
+}

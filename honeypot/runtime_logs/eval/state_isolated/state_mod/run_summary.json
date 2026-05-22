@@ -1,0 +1,15 @@
+{
+  "variant": "state_mod",
+  "scenario": "state_mod",
+  "description": "State-modifying commands \u2014 tests that the deterministic executor correctly persists file creation, deletion, move, and copy across subsequent commands within the same session. Each modification is immediately verified.\n",
+  "host": "localhost",
+  "port": 2223,
+  "username": "ubuntu",
+  "run_start_utc": "2026-04-02T19:57:20.544752+00:00",
+  "run_end_utc": "2026-04-02T19:57:46.011935+00:00",
+  "duration_s": 25.47,
+  "n_commands": 34,
+  "n_timeout": 0,
+  "output_dir": "runtime_logs/eval/state_isolated/state_mod",
+  "manifest": "runtime_logs/eval/state_isolated/state_mod/run_manifest.jsonl"
+}

@@ -1,0 +1,160 @@
+meta:
+  distro: ubuntu
+  distro_version: "22.04"
+  locale: "C.UTF-8"
+
+cases:
+
+  - id: whoami_ok
+    cmd: ["bash", "-lc", "whoami"]
+    family: whoami
+    outcome: success
+    tags: [format]
+
+  - id: id_ok
+    cmd: ["bash", "-lc", "id"]
+    family: id
+    outcome: success
+    tags: [format]
+
+  - id: uname_ok
+    cmd: ["bash", "-lc", "uname -a"]
+    family: uname
+    outcome: success
+    tags: [banner]
+
+  - id: hostname_ok
+    cmd: ["bash", "-lc", "hostname"]
+    family: hostname
+    outcome: success
+    tags: [banner]
+
+  - id: pwd_ok
+    cmd: ["bash", "-lc", "pwd"]
+    family: pwd
+    outcome: success
+    tags: [format]
+
+  - id: env_ok
+    cmd: ["bash", "-lc", "env"]
+    family: env
+    outcome: success
+    tags: [format]
+
+  - id: ls_basic
+    cmd: ["bash", "-lc", "ls"]
+    family: ls
+    outcome: success
+    tags: [format]
+
+  - id: ls_long
+    cmd: ["bash", "-lc", "ls -l"]
+    family: ls
+    outcome: success
+    tags: [format]
+
+  - id: ls_missing
+    cmd: ["bash", "-lc", "ls /no_such_dir"]
+    family: ls
+    outcome: missing_path
+    tags: [error]
+
+  - id: ls_permission
+    cmd: ["bash", "-lc", "ls /root"]
+    family: ls
+    outcome: permission_denied
+    tags: [error]
+
+  - id: cd_missing
+    cmd: ["bash", "-lc", "cd /no_such_dir"]
+    family: cd
+    outcome: missing_path
+    tags: [error]
+
+
+  - id: cat_missing
+    cmd: ["bash", "-lc", "cat /no_such_file"]
+    family: cat
+    outcome: missing_path
+    tags: [error]
+
+  - id: cat_directory
+    cmd: ["bash", "-lc", "cat /"]
+    family: cat
+    outcome: is_a_directory
+    tags: [error]
+
+  - id: touch_ok
+    cmd: ["bash", "-lc", "touch testfile"]
+    family: touch
+    outcome: success
+    tags: [state_change]
+
+  - id: touch_permission
+    cmd: ["bash", "-lc", "touch /root/testfile"]
+    family: touch
+    outcome: permission_denied
+    tags: [error]
+
+  - id: touch_missing_parent
+    cmd: ["bash", "-lc", "touch /no_such_dir/testfile"]
+    family: touch
+    outcome: missing_path
+    tags: [error]
+
+  - id: mkdir_ok
+    cmd: ["bash", "-lc", "mkdir testdir"]
+    family: mkdir
+    outcome: success
+    tags: [state_change]
+
+  - id: rm_missing
+    cmd: ["bash", "-lc", "rm /no_such_file"]
+    family: rm
+    outcome: missing_path
+    tags: [error]
+
+  - id: cp_missing
+    cmd: ["bash", "-lc", "cp /no_such_file /tmp/x"]
+    family: cp
+    outcome: missing_path
+    tags: [error]
+
+  - id: mv_missing
+    cmd: ["bash", "-lc", "mv /no_such_file /tmp/x"]
+    family: mv
+    outcome: missing_path
+    tags: [error]
+
+
+# Process and system overview
+  - id: ps_basic
+    cmd: ["bash", "-lc", "ps"]
+    family: ps
+    outcome: success
+    tags: [format]
+
+  - id: df_basic
+    cmd: ["bash", "-lc", "df"]
+    family: df
+    outcome: success
+    tags: [format]
+
+  - id: free_basic
+    cmd: ["bash", "-lc", "free"]
+    family: free
+    outcome: success
+    tags: [format]
+
+# Network
+  - id: ip_ok
+    cmd: ["bash", "-lc", "ip addr"]
+    family: ip
+    outcome: success
+    tags: [format]
+
+  - id: ifconfig_ok
+    cmd: ["bash", "-lc", "ifconfig"]
+    family: ifconfig
+    outcome: success
+    tags: [format]

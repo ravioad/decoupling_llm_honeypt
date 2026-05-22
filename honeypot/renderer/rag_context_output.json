@@ -1,0 +1,46 @@
+{
+  "schema_version": "ragctx.v1",
+  "status": "ok",
+  "query": {
+    "collection": "shell_context",
+    "family": "ls",
+    "outcome": "missing_path",
+    "wanted_types": [
+      "error_phrase"
+    ],
+    "query_text": "ls cannot access <path> no such file or directory",
+    "k": 3,
+    "where": {
+      "$and": [
+        {
+          "family": "ls"
+        },
+        {
+          "type": "error_phrase"
+        },
+        {
+          "outcome": "missing_path"
+        }
+      ]
+    }
+  },
+  "results": [
+    {
+      "doc_id": "ls_missing::err::0",
+      "text": "ls: cannot access '<path>': No such file or directory",
+      "metadata": {
+        "type": "error_phrase",
+        "exit_code": 2,
+        "tags": "error",
+        "family": "ls",
+        "source_case": "ls_missing",
+        "outcome": "missing_path"
+      },
+      "distance": 0.04213453
+    }
+  ],
+  "stats": {
+    "took_ms": 342,
+    "returned": 1
+  }
+}

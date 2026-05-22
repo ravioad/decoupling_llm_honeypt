@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "decop-llm-honey"
+version = "0.1.0"
+description = "LLM honeypot with RAG"
+requires-python = ">=3.10"
+dependencies = [
+    "asyncssh>=2.14.0",
+    "bcrypt>=4.0.0",
+    "chromadb>=1.4.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["honeypot*"]
