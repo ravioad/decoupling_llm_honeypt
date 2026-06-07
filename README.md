@@ -11,11 +11,11 @@ State-isolated LLM SSH honeypot. Emulates an Ubuntu 22.04 shell over SSH. A dete
 ## Quick Start
 
 ```bash
-# Step 1 — Pull the model (one-time)
-ollama pull qwen2.5:7b
-
-# Step 2 — Start Ollama server
+# Step 1 — Start Ollama server
 ollama serve
+
+# Step 2 — Pull the model (one-time)
+ollama pull qwen2.5:7b
 
 # Step 3 — Start the stack (in a separate terminal)
 docker compose up
@@ -27,11 +27,11 @@ Connect: `ssh ubuntu@localhost -p 2223` (password: `helloworld`)
 
 ## System Variants
 
-| Variant | Port | Activation | Description |
-|---------|------|-----------|-------------|
-| `state_isolated` | 2223 | `USE_LLM_RENDERER=true`, `FORCE_DETERMINISTIC=false` | Full system — executor + LLM renderer + validator |
-| `deterministic_only` | 2223 | `FORCE_DETERMINISTIC=true` | Executor + fallback only, no LLM calls |
-| `prompt_only` | 2224 | baseline server | Ollama conversation loop, no executor or validator |
+| Variant              | Port | Activation                                           | Description                                        |
+| -------------------- | ---- | ---------------------------------------------------- | -------------------------------------------------- |
+| `state_isolated`     | 2223 | `USE_LLM_RENDERER=true`, `FORCE_DETERMINISTIC=false` | Full system — executor + LLM renderer + validator  |
+| `deterministic_only` | 2223 | `FORCE_DETERMINISTIC=true`                           | Executor + fallback only, no LLM calls             |
+| `prompt_only`        | 2224 | baseline server                                      | Ollama conversation loop, no executor or validator |
 
 All three containers start automatically with `docker compose up`.
 
@@ -52,6 +52,7 @@ bash eval/run_eval.sh
 ```
 
 The script:
+
 - Enforces `FORCE_NEW_SESSION=true` internally
 - Automatically restarts the honeypot container with the correct `FORCE_DETERMINISTIC` value per variant
 - Computes metrics after each scenario
@@ -91,13 +92,13 @@ python3 visualize_extra.py    # KDE/CDF/scatter/consistency charts → charts_ex
 
 ## Key Files
 
-| Path | Description |
-|------|-------------|
-| `honeypot/ssh_server.py` | SSH server + session loop |
-| `honeypot/executor/executor.py` | Deterministic command executor (23 commands) |
-| `honeypot/validator/validate.py` | Output validator |
-| `honeypot/baseline/ssh_server_baseline.py` | Prompt-only baseline (port 2224) |
-| `honeypot/eval/run_eval.sh` | Full evaluation runner |
-| `final-evaulation-runs/evaluation_runs.csv` | Raw evaluation data (372 rows) |
-| `final-evaulation-runs/aggregate.md` | Aggregated statistics (mean ± std across 31 runs) |
-| `rag-corpus/out/kb_docs_v1.jsonl` | RAG knowledge base (26 documents) |
+| Path                                        | Description                                       |
+| ------------------------------------------- | ------------------------------------------------- |
+| `honeypot/ssh_server.py`                    | SSH server + session loop                         |
+| `honeypot/executor/executor.py`             | Deterministic command executor (23 commands)      |
+| `honeypot/validator/validate.py`            | Output validator                                  |
+| `honeypot/baseline/ssh_server_baseline.py`  | Prompt-only baseline (port 2224)                  |
+| `honeypot/eval/run_eval.sh`                 | Full evaluation runner                            |
+| `final-evaulation-runs/evaluation_runs.csv` | Raw evaluation data (372 rows)                    |
+| `final-evaulation-runs/aggregate.md`        | Aggregated statistics (mean ± std across 31 runs) |
+| `rag-corpus/out/kb_docs_v1.jsonl`           | RAG knowledge base (26 documents)                 |
