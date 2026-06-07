@@ -17,13 +17,20 @@ ollama serve
 # Step 2 — Pull the model (one-time)
 ollama pull qwen2.5:7b
 
-# Step 3 — Start the stack (in a separate terminal)
+# Step 3 — Create the environment file (required)
+cp .env.example .env
+```
+
+> **Linux users:** `host.docker.internal` is macOS/Windows only. Open `.env` and set `OLLAMA_URL=http://172.17.0.1:11434`.
+
+> **Why this step is required:** without `.env`, the server starts with hardcoded defaults — LLM renderer disabled (`USE_LLM_RENDERER=false`), port 2222 instead of 2223, and Ollama/ChromaDB pointed at `localhost` instead of the Docker network. The system runs but behaves as the `deterministic_only` variant with no LLM output.
+
+```bash
+# Step 4 — Start the stack (in a separate terminal)
 docker compose up
 ```
 
 Connect: `ssh ubuntu@localhost -p 2223` (password: `helloworld`)
-
-> **Linux users:** `host.docker.internal` is macOS/Windows only. Copy `.env.example` to `.env` and set `OLLAMA_URL=http://172.17.0.1:11434` before starting.
 
 ## System Variants
 
@@ -74,7 +81,7 @@ ollama serve
 docker run -d -p 8000:8000 chromadb/chroma
 
 cd honeypot
-cp .env.example .env   # set CHROMA_HOST=localhost, USE_LLM_RENDERER as needed
+cp .env.example .env   # required — defaults to localhost for Chroma/Ollama; adjust USE_LLM_RENDERER as needed
 pip install -r requirements.txt
 ./run_local.sh
 ```

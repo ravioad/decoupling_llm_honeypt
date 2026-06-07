@@ -3,7 +3,7 @@
     "distro": "Ubuntu",
     "distro_version": "22.04.3 LTS",
     "kernel": "5.15.0-88-generic",
-    "hostname": "ubuntu-22-dcb3",
+    "hostname": "ubuntu-22-7966",
     "timezone": "UTC",
     "boot_id": "a1b2c3d4-e5f6-7890-abcd-ef0123456789",
     "boot_time": "2026-01-29T00:00:00Z"
@@ -11,7 +11,7 @@
   "session": {
     "session_id": "S-2026-01-29-0001",
     "connected_at": "2026-01-29T20:10:11Z",
-    "cwd": "/proc",
+    "cwd": "/home/ubuntu",
     "umask": "0022",
     "active_user": "ubuntu",
     "last_exit_code": 0
@@ -54,7 +54,7 @@
         "name": "eth0",
         "state": "UP",
         "mtu": 1500,
-        "inet": "192.168.56.227/24",
+        "inet": "192.168.56.247/24",
         "broadcast": "192.168.56.255"
       }
     ]
@@ -103,7 +103,7 @@
         "mode": "0700",
         "owner": "root",
         "group": "root",
-        "mtime": "2026-01-01T00:00:00Z",
+        "mtime": "2026-06-07T21:45:14Z",
         "children": []
       },
       "/home": {
@@ -234,8 +234,10 @@
         "mode": "0777",
         "owner": "root",
         "group": "root",
-        "mtime": "2026-01-29T00:00:00Z",
-        "children": []
+        "mtime": "2026-06-07T21:45:14Z",
+        "children": [
+          "/tmp/eval_dir"
+        ]
       },
       "/etc": {
         "type": "dir",
@@ -391,6 +393,25 @@
         "size": 187,
         "mtime": "2026-03-08T11:05:00Z",
         "content_ref": "content/root_notes_v1"
+      },
+      "/tmp/eval_dir": {
+        "type": "dir",
+        "mode": "0755",
+        "owner": "ubuntu",
+        "group": "ubuntu",
+        "mtime": "2026-06-07T21:44:48Z",
+        "children": [
+          "/tmp/eval_dir/nested.txt"
+        ]
+      },
+      "/tmp/eval_dir/nested.txt": {
+        "type": "file",
+        "mode": "0644",
+        "owner": "ubuntu",
+        "group": "ubuntu",
+        "size": 0,
+        "mtime": "2026-06-07T21:44:48Z",
+        "content_ref": null
       }
     }
   },
@@ -424,8 +445,8 @@
     "content/index_html_v1": "<html><body>Hello</body></html>",
     "content/etc_passwd_v1": "root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\nbin:x:2:2:bin:/bin:/usr/sbin/nologin\nsys:x:3:3:sys:/dev:/usr/sbin/nologin\nsync:x:4:65534:sync:/bin:/bin/sync\ngames:x:5:60:games:/usr/games:/usr/sbin/nologin\nman:x:6:12:man:/var/cache/man:/usr/sbin/nologin\nwww-data:x:33:33:www-data:/var/www:/usr/sbin/nologin\nbackup:x:34:34:backup:/var/backups:/usr/sbin/nologin\nnobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin\nubuntu:x:1000:1000:Ubuntu,,,:/home/ubuntu:/bin/bash\n",
     "content/etc_shadow_v1": "root:$6$rounds=4096$saltsaltsaltsalt$hashhashhashhashhashhashhashhashhashhashhashhashhashhashhashhashhashhashhashhash:19000:0:99999:7:::\ndaemon:*:19000:0:99999:7:::\nbin:*:19000:0:99999:7:::\nwww-data:*:19000:0:99999:7:::\nubuntu:$6$rounds=4096$ubuntusaltubuntuX$hashhashhashhashhashhashhashhashhashhashhashhashhashhashhashhashhashhashhashhash:19385:0:99999:7:::\n",
-    "content/hostname_v1": "ubuntu-22-dcb3\n",
-    "content/hosts_v1": "127.0.0.1   localhost\n127.0.1.1   ubuntu-22-dcb3\n\n# The following lines are desirable for IPv6 capable hosts\n::1         localhost ip6-localhost ip6-loopback\nff02::1     ip6-allnodes\nff02::2     ip6-allrouters\n",
+    "content/hostname_v1": "ubuntu-22-7966\n",
+    "content/hosts_v1": "127.0.0.1   localhost\n127.0.1.1   ubuntu-22-7966\n\n# The following lines are desirable for IPv6 capable hosts\n::1         localhost ip6-localhost ip6-loopback\nff02::1     ip6-allnodes\nff02::2     ip6-allrouters\n",
     "content/os_release_v1": "PRETTY_NAME=\"Ubuntu 22.04.3 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"22.04\"\nVERSION=\"22.04.3 LTS (Jammy Jellyfish)\"\nVERSION_CODENAME=jammy\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\n",
     "content/syslog_v1": "Jan 29 00:00:01 ubuntu-22 kernel: [    0.000000] Linux version 5.15.0-88-generic\nJan 29 00:00:01 ubuntu-22 systemd[1]: Started System Logging Service.\nJan 29 00:05:12 ubuntu-22 systemd[1]: Started nginx - A high performance web server.\nJan 29 20:10:11 ubuntu-22 sshd[928]: Accepted password for ubuntu from 10.0.2.2 port 52341 ssh2\nJan 29 20:10:11 ubuntu-22 sshd[928]: pam_unix(sshd:session): session opened for user ubuntu\n",
     "content/auth_log_v1": "Jan 29 20:10:08 ubuntu-22 sshd[928]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=10.0.2.2  user=ubuntu\nJan 29 20:10:10 ubuntu-22 sshd[928]: Failed password for ubuntu from 10.0.2.2 port 52341 ssh2\nJan 29 20:10:11 ubuntu-22 sshd[928]: Accepted password for ubuntu from 10.0.2.2 port 52341 ssh2\n",
@@ -435,6 +456,7 @@
     "content/proc_net_dev_v1": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n  eth0: 1245856    9823    0    0    0     0          0         0   234567    3456    0    0    0     0       0          0\n",
     "content/root_bash_history_v1": "apt update\napt upgrade -y\nsystemctl status nginx\nmysql -u root -p\ncat /etc/mysql/debian.cnf\nsystemctl restart nginx\ntail -f /var/log/nginx/error.log\nufw allow 22\nufw allow 80\nufw allow 443\nufw enable\npasswd ubuntu\nls -la /home/ubuntu\ncat /etc/shadow\nadduser deploy\nls -la\n",
     "content/root_ssh_authorized_keys_v1": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC7vX2kLmN8pQwRtYuZoJdHfGsEaBcDiWnMlKvPxOyTqA== admin@workstation\n",
-    "content/root_notes_v1": "DB creds: mysql root / see /etc/mysql/debian.cnf\nSSH keys deployed for deploy user\nTODO: rotate ubuntu password after handoff\nTODO: set up fail2ban\nserver IP: 192.168.56.23\n"
+    "content/root_notes_v1": "DB creds: mysql root / see /etc/mysql/debian.cnf\nSSH keys deployed for deploy user\nTODO: rotate ubuntu password after handoff\nTODO: set up fail2ban\nserver IP: 192.168.56.23\n",
+    "content/redir_d94a907e": "hello from eval\nsecond line\n"
   }
 }
