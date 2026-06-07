@@ -109,3 +109,7 @@ python3 visualize_extra.py    # KDE/CDF/scatter/consistency charts → charts_ex
 | `final-evaulation-runs/evaluation_runs.csv` | Raw evaluation data (372 rows)                    |
 | `final-evaulation-runs/aggregate.md`        | Aggregated statistics (mean ± std across 31 runs) |
 | `rag-corpus/out/kb_docs_v1.jsonl`           | RAG knowledge base (26 documents)                 |
+
+---
+
+**If you have any questions or need help with installation, please feel free to contact me at [s242513@dtu.dk].**
