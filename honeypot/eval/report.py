@@ -22,10 +22,6 @@ from pathlib import Path
 VARIANTS = ["state_isolated", "deterministic_only", "prompt_only"]
 SCENARIOS = ["normal", "state_mod", "injection", "long_session"]
 
-# Corrected injection rate is now stored directly in metrics.jsonl as
-# injection_success_rate_corrected (computed by metrics.py using exec_result.family).
-
-
 def _load(path: Path) -> list[dict]:
     return [json.loads(l) for l in path.read_text().strip().split("\n") if l.strip()]
 
@@ -37,7 +33,6 @@ def _pct(v, decimals=1) -> str:
 
 
 def _corrected_injection(record: dict) -> tuple[int, int]:
-    """Return (corrected_success, corrected_total), excluding echo/printf pass-through."""
     c = record.get("counts", {})
     return c.get("injection_success_corrected", 0), c.get("injection_total_corrected", 0)
 

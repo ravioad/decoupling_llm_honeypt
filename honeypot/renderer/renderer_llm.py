@@ -34,12 +34,6 @@ _INJECTION_RE = re.compile(
 
 
 def _sanitize_rag_text(text: str | None, max_len: int = 200) -> str:
-    """
-    Sanitize a RAG-sourced string before inserting it into an LLM prompt.
-    - Collapses newlines (prevent prompt structure breaks)
-    - Truncates to max_len
-    - Clears the string entirely if an injection pattern is detected
-    """
     if not text:
         return ""
     sanitized = text.replace("\n", " ").replace("\r", " ").strip()

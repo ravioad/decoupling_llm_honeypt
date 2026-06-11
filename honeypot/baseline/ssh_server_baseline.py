@@ -103,13 +103,10 @@ def check_password(seed_state: dict, username: str, password: str) -> bool:
 
 
 def prompt_str(hostname: str, user: str, cwd: str) -> str:
-    # Produce the shell prompt shown after each command.
     home_display = "~" if cwd == PERSONA_HOME else cwd
     return f"{user}@{hostname}:{home_display}$ "
 
 def _build_prompt(history: list[dict], command: str, cwd: str) -> str:
-    # Build the full LLM prompt: system context + conversation history + new command.
-
     lines = [
         f"You are a Linux bash terminal running {PERSONA_DISTRO}.",
         f"Hostname: {PERSONA_HOSTNAME}. User: {PERSONA_USER}. CWD: {cwd}.",
@@ -141,7 +138,6 @@ def _build_prompt(history: list[dict], command: str, cwd: str) -> str:
 
 
 def call_llm(history: list[dict], command: str, cwd: str) -> tuple[str, str]:
-    # Call Ollama and return (stdout, stderr). Returns ("", "") on any failure.
     prompt = _build_prompt(history, command, cwd)
     payload = {
         "model": OLLAMA_MODEL,
@@ -177,8 +173,6 @@ _CD_RE = re.compile(r"^cd\s+(.*)")
 
 
 def _update_cwd(cwd: str, command: str) -> str:
-    #Parse a cd command and return the new cwd.
-    
     m = _CD_RE.match(command.strip())
     if not m:
         return cwd

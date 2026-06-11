@@ -37,7 +37,6 @@ def retrieve_rag_context(
     host: str | None = None,
     port: int | None = None,
 ) -> dict[str, Any]:
-    """Query ChromaDB and return a ragctx.v1 dict; sets status='error' on failure."""
     os.environ.setdefault("CHROMA_TELEMETRY", "false")
     host = host or os.getenv("CHROMA_HOST", "localhost")
     port = port or int(os.getenv("CHROMA_PORT", "8000"))
@@ -117,7 +116,6 @@ def get_ragctx(
     query_text: str,
     k: int = 3,
 ) -> dict[str, Any]:
-    """Build a RagQuery and return the ragctx.v1 result dict."""
     try:
         q = RagQuery(
             collection=collection,
@@ -154,7 +152,6 @@ def pick_first_text(ctx: dict[str, Any], wanted_type: str) -> Optional[str]:
 
 
 def extract_rag_phrases(ragctx: Any) -> Tuple[Optional[str], Optional[str]]:
-    """Extract (rag_error_phrase, rag_format_hint) from a ragctx.v1 dict."""
     try:
         if not isinstance(ragctx, dict):
             return None, None

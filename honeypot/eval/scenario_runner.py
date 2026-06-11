@@ -32,7 +32,6 @@ ANSI_RE = re.compile(r"\x1b\[[0-9;]*[mGKHF]")
 
 
 def _apply_backspaces(s: str) -> str:
-    """Apply terminal backspace sequences."""
     out: list[str] = []
     for ch in s:
         if ch == "\x08":
@@ -46,7 +45,6 @@ def _apply_backspaces(s: str) -> str:
 def _read_until_prompt(
     chan: paramiko.Channel, timeout: float = 30.0
 ) -> tuple[str, str]:
-    """Read channel output until a shell or sudo password prompt is detected."""
     buf = ""
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
@@ -65,20 +63,16 @@ def _read_until_prompt(
 
 
 def _clean_output(raw: str, cmd: str) -> str:
-    # 1. Simulate backspace sequences from PTY echo rewriting
     out = _apply_backspaces(raw)
-    # 2. Strip ANSI escape codes
     out = ANSI_RE.sub("", out)
-    # 3. Normalise line endings
     out = out.replace("\r\n", "\n").replace("\r", "\n")
 
     lines = out.split("\n")
 
-    # 4. Drop any leading line that is just the echoed command
+     # drop echoed command and trailing prompt
     if lines and lines[0].strip() == cmd.strip():
         lines = lines[1:]
 
-    # 5. Drop trailing prompt line(s)
     while lines and PROMPT_RE.search(lines[-1]):
         lines.pop()
 
@@ -96,7 +90,6 @@ def run_scenario(
     command_timeout: float = 30.0,
     verbose: bool = True,
 ) -> Path:
-    """Run a scenario YAML against the honeypot and write run_manifest.jsonl + run_summary.json."""
     scenario = yaml.safe_load(scenario_path.read_text())
     commands: list[dict] = scenario.get("commands", [])
     variant = scenario.get("variant", scenario_path.stem)

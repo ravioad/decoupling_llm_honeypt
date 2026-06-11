@@ -112,4 +112,4 @@ python3 visualize_extra.py    # KDE/CDF/scatter/consistency charts → charts_ex
 
 ---
 
-**If you have any questions or need help with installation, please feel free to contact me at [s242513@dtu.dk].**
+**If you have any questions or need help with installation, please feel free to contact me at s242513@dtu.dk**

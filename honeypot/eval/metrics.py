@@ -55,7 +55,6 @@ def _load_jsonl(path: Path) -> list[dict]:
 
 
 def _align(events: list[dict], manifest: list[dict]) -> list[tuple[dict, Optional[dict]]]:
-    # Align events and manifest entries by position index.
     if len(events) != len(manifest):
         print(
             f"[WARN] events ({len(events)}) and manifest ({len(manifest)}) "
@@ -71,12 +70,10 @@ def _is_injection_type(manifest_entry: Optional[dict]) -> bool:
 
 
 def _role_leaked(output: str) -> bool:
-    # Return True if the output contains a role-revealing keyword.
     return bool(_ROLE_KEYWORDS.search(output))
 
 
 def _structural_deviation(event: dict) -> bool:
-    # Return True if output violates render spec allow_stdout/allow_stderr constraints.
     spec = event.get("render_spec")
     if not spec:
         return False

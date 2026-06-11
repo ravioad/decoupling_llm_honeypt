@@ -118,7 +118,6 @@ def _result(
     stderr: str = "",
     target_path: str | None = None,
 ) -> ExecResult:
-    """Helper to build ExecResult with consistent schema_version."""
     return ExecResult(
         "exec_result.v1", raw, family, outcome, exit_code, stdout, stderr, target_path
     )
@@ -436,7 +435,6 @@ def _exec_date(raw: str, args: list[str]) -> ExecResult:
 
 
 def _exec_uptime(raw: str, state: Dict[str, Any], args: list[str]) -> ExecResult:
-    """Execute uptime command. Uses meta.boot_time for uptime calculation."""
     meta = state.get("meta") or {}
     boot_time_str = meta.get("boot_time", "2026-01-29T00:00:00Z")
     boot = datetime.fromisoformat(boot_time_str.replace("Z", "+00:00"))
@@ -497,7 +495,6 @@ def _exec_uptime(raw: str, state: Dict[str, Any], args: list[str]) -> ExecResult
 
 
 def _exec_env(raw: str, state: Dict[str, Any], args: list[str]) -> ExecResult:
-    """Execute env command. Prints environment variables from session and user."""
     if args:
         flag = args[0].lstrip("-")
         err = f"env: invalid option -- '{flag}'\n"
@@ -521,7 +518,6 @@ def _exec_env(raw: str, state: Dict[str, Any], args: list[str]) -> ExecResult:
 
 
 def _exec_which(raw: str, args: list[str]) -> ExecResult:
-    """Execute which command. Looks up command path in BIN_PATHS."""
     if not args:
         err = "which: missing argument\n"
         return _result(raw, "which", "error", 1, "", err)
@@ -549,7 +545,6 @@ def _exec_clear(raw: str, args: list[str]) -> ExecResult:
 
 
 def _exec_ps(raw: str, state: Dict[str, Any], args: list[str]) -> ExecResult:
-    """Execute ps command. Uses state.processes.table for process list."""
     processes = state.get("processes") or {}
     table = processes.get("table") or []
 
@@ -609,7 +604,6 @@ def _exec_touch(
     perm: PermissionChecker,
     args: list[str],
 ) -> ExecResult:
-    """Execute touch."""
     if not args:
         return _result(raw, "touch", "missing_path", 1, "", "", target_path=None)
 
@@ -687,7 +681,6 @@ def _exec_mkdir(
     perm: PermissionChecker,
     args: list[str],
 ) -> ExecResult:
-    """Execute mkdir."""
     if not args:
         return _result(raw, "mkdir", "missing_path", 1, "", "", target_path=None)
 
@@ -835,7 +828,6 @@ def _exec_mv(
     perm: PermissionChecker,
     args: list[str],
 ) -> ExecResult:
-    """Execute mv."""
     if len(args) < 2:
         return _result(raw, "mv", "missing_path", 1, "", "", target_path=None)
 
@@ -998,7 +990,6 @@ def _exec_cp(
 
 
 def _exec_ip(raw: str, state: Dict[str, Any], args: list[str]) -> ExecResult:
-    """Execute ip addr / ip route commands. Uses state.network for data."""
     if not args:
         return _result(raw, "ip", "error", 1, "", "ip: invalid option\n")
 
@@ -1063,7 +1054,6 @@ def _exec_ip(raw: str, state: Dict[str, Any], args: list[str]) -> ExecResult:
 
 
 def _exec_ifconfig(raw: str, state: Dict[str, Any], args: list[str]) -> ExecResult:
-    """Execute ifconfig. Uses state.network.interfaces for interface list."""
     if args:
         flag = args[0].lstrip("-")
         return _result(
@@ -1104,19 +1094,13 @@ def _exec_ifconfig(raw: str, state: Dict[str, Any], args: list[str]) -> ExecResu
 
 
 def _exec_sudo_stub(raw: str) -> ExecResult:
-    """
-    Stub, never called in practice.
-    ssh_server.py intercepts all sudo commands before they reach the executor.
-    Exists so that "which sudo" resolves via BIN_PATHS and SUPPORTED guards pass.
-    """
+    # Stub, never called in practice.
+    # ssh_server.py intercepts all sudo commands before they reach the executor.
+    # Exists so that "which sudo" resolves via BIN_PATHS and SUPPORTED guards pass.
     return _result(raw, "sudo", "error", 1, "", "sudo: internal routing error\n")
 
 
 def execute_with_state(raw: str, state: Dict[str, Any]) -> ExecResult:
-    """
-    Execute a raw command string against the given state.
-    Returns ExecResult with outcome, exit_code, stdout, and stderr.
-    """
     fam = _family(raw)
     args = _args(raw)
 

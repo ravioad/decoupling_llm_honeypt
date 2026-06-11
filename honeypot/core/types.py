@@ -48,5 +48,4 @@ class RenderSpec:
     rag_format_hint: Optional[str] = None
 
     # Semantic validation constraints for render_type="error"
-    # Keys: must_start_with_family (bool), must_contain_path (bool), error_keyword (str)
     semantic_constraints: Optional[Dict[str, Any]] = None
